@@ -118,7 +118,10 @@ if [ -z "$ANDROID_TOOLCHAIN" ] || [ ! -d "$ANDROID_TOOLCHAIN" ]; then
 fi
 
 case $_ANDROID_TARGET_SELECT in
-	arch-arm)	  
+	arch-arm)
+      ANDROID_TOOLS="arm-linux-androideabi-gcc arm-linux-androideabi-ranlib arm-linux-androideabi-ld"
+	  ;;
+	arch-arm-v7a)
       ANDROID_TOOLS="arm-linux-androideabi-gcc arm-linux-androideabi-ranlib arm-linux-androideabi-ld"
 	  ;;
     arch-arm64-v8a)
@@ -244,9 +247,6 @@ echo "CHECK_CROSS_COMPILER = $CROSS_COMPILE"
 
 # For the Android toolchain
 # https://android.googlesource.com/platform/ndk/+/ics-mr0/docs/STANDALONE-TOOLCHAIN.html
-export ANDROID_SYSROOT="$ANDROID_NDK_ROOT/platforms/$_ANDROID_API/$_ANDROID_ARCH"
-export SYSROOT="$ANDROID_SYSROOT"
-export NDK_SYSROOT="$ANDROID_SYSROOT"
 export ANDROID_NDK_SYSROOT="$ANDROID_SYSROOT"
 export ANDROID_API="$_ANDROID_API"
 

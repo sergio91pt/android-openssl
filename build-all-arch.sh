@@ -6,13 +6,18 @@ set -e
 rm -rf prebuilt
 mkdir prebuilt
 
-archs=(armeabi arm64-v8a mips mips64 x86 x86_64)
+archs=(armeabi armeabi-v7a arm64-v8a mips mips64 x86 x86_64)
 
 for arch in ${archs[@]}; do
     xLIB="/lib"
     case ${arch} in
         "armeabi")
             _ANDROID_TARGET_SELECT=arch-arm
+            _ANDROID_ARCH=arch-arm
+            _ANDROID_EABI=arm-linux-androideabi-4.9
+            configure_platform="android" ;;
+        "armeabi-v7a")
+            _ANDROID_TARGET_SELECT=arch-arm-v7a
             _ANDROID_ARCH=arch-arm
             _ANDROID_EABI=arm-linux-androideabi-4.9
             configure_platform="android-armv7" ;;
@@ -53,7 +58,7 @@ for arch in ${archs[@]}; do
     . ./setenv-android-mod.sh
 
     echo "CROSS COMPILE ENV : $CROSS_COMPILE"
-    cd openssl-1.0.1j
+    cd openssl-1.0.1p
 
     xCFLAGS="-DSHARED_EXTENSION=.so -fPIC -DOPENSSL_PIC -DDSO_DLFCN -DHAVE_DLFCN_H -mandroid -I$ANDROID_DEV/include -B$ANDROID_DEV/$xLIB -O3 -fomit-frame-pointer -Wall"
 
@@ -71,10 +76,11 @@ for arch in ${archs[@]}; do
     make depend
     make all
 
+    file libcrypto.a
     file libcrypto.so
     file libssl.so
-    cp libcrypto.so ../prebuilt/${arch}/libcrypto.so
-    cp libssl.so ../prebuilt/${arch}/libssl.so
+    file libssl.a
+    cp libcrypto.so libssl.so libcrypto.a libssl.a ../prebuilt/${arch}/
     cd ..
 done
 exit 0
